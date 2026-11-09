@@ -65,7 +65,7 @@ resource "aws_bedrock_guardrail" "customer_service" {
       action = "BLOCK"
     }
     pii_entities_config {
-      type   = "IBAN"
+      type   = "INTERNATIONAL_BANK_ACCOUNT_NUMBER"
       action = "ANONYMIZE"
     }
   }
