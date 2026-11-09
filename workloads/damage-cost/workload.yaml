@@ -1,0 +1,17 @@
+# Added by a third team with this file and its training code only: no platform change (see tests/test_onboarding.py).
+name: damage-cost
+kind: model
+team: damage
+owner: damage-ds@example.com
+entrypoint: paved_workloads.damage:train
+serving:
+  target: sagemaker-realtime
+  instance_type: ml.m5.large
+  instance_count: 1
+budget_usd_month: 300
+gates:
+  p95_latency_slo_ms: 20
+evaluation:
+  label: repair_cost
+  metric: rmse
+  slices: [panel]

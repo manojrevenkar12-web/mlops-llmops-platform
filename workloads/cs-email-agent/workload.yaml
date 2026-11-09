@@ -1,0 +1,12 @@
+# Customer-service agent for email and chat: classify, act through the reservation tools, reply from the KB.
+name: cs-email-agent
+kind: agent
+team: cs-automation
+owner: cs-genai@example.com
+entrypoint: paved_workloads.cs_agent:Agent
+model_id: anthropic.claude-sonnet-4-5
+serving:
+  target: bedrock-agentcore
+  latency_class: interactive
+budget_usd_month: 25000
+docs: docs/handbook.md#agents

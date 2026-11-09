@@ -1,0 +1,17 @@
+# Booking-conversion model behind rental pricing. Owned by the pricing data science team.
+name: pricing-conversion
+kind: model
+team: pricing
+owner: pricing-ds@example.com
+entrypoint: paved_workloads.pricing:train
+serving:
+  target: sagemaker-realtime
+  instance_type: ml.m5.xlarge
+  instance_count: 2
+budget_usd_month: 900
+docs: docs/handbook.md#models
+evaluation:
+  label: booked
+  metric: logloss
+  slices: [station_type, car_class]
+  skew_exclude: [log_multiplier]

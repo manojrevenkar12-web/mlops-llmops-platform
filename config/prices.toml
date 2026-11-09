@@ -1,0 +1,25 @@
+# List prices in USD, us-east-1, checked 2026-11-09. eu-central-1 compute is somewhat higher; change here.
+# Sources:
+#   Claude on Bedrock: https://aws.amazon.com/bedrock/pricing/ and https://docs.claude.com/en/docs/about-claude/pricing
+#     (Bedrock base prices match the Claude API; batch is 50% off; cache reads 0.1x input, 5-minute cache writes 1.25x)
+#   SageMaker real-time hosting: https://aws.amazon.com/sagemaker-ai/pricing/ (ml.m5.large 0.115, ml.m5.xlarge 0.23,
+#     ml.g5.xlarge 1.408 per instance-hour)
+
+[bedrock."anthropic.claude-sonnet-4-5"]
+input_per_mtok = 3.00
+output_per_mtok = 15.00
+cache_read_multiplier = 0.1
+cache_write_multiplier = 1.25
+batch_multiplier = 0.5
+
+[bedrock."anthropic.claude-haiku-4-5"]
+input_per_mtok = 1.00
+output_per_mtok = 5.00
+cache_read_multiplier = 0.1
+cache_write_multiplier = 1.25
+batch_multiplier = 0.5
+
+[sagemaker]
+"ml.m5.large" = 0.115
+"ml.m5.xlarge" = 0.23
+"ml.g5.xlarge" = 1.408

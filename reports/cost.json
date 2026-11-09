@@ -1,0 +1,171 @@
+{
+ "note": "Volumes are simulated; prices are list prices from config/prices.toml. Savings are estimates.",
+ "total_spend_usd_month": 33658.56,
+ "by_team": {
+  "cs-automation": {
+   "spend_usd_month": 27145.44,
+   "workloads": 3
+  },
+  "damage": {
+   "spend_usd_month": 3167.47,
+   "workloads": 2
+  },
+  "branch-ops": {
+   "spend_usd_month": 1414.8,
+   "workloads": 1
+  },
+  "pricing": {
+   "spend_usd_month": 1007.4,
+   "workloads": 2
+  },
+  "fleet-ops": {
+   "spend_usd_month": 335.8,
+   "workloads": 1
+  },
+  "customer-analytics": {
+   "spend_usd_month": 251.85,
+   "workloads": 1
+  },
+  "revenue-mgmt": {
+   "spend_usd_month": 167.9,
+   "workloads": 1
+  },
+  "finance-ds": {
+   "spend_usd_month": 167.9,
+   "workloads": 1
+  }
+ },
+ "workloads": [
+  {
+   "team": "cs-automation",
+   "workload": "cs-email-agent",
+   "kind": "tokens",
+   "spend_usd_month": 21222.0
+  },
+  {
+   "team": "cs-automation",
+   "workload": "cs-chat-agent",
+   "kind": "tokens",
+   "spend_usd_month": 4676.4
+  },
+  {
+   "team": "damage",
+   "workload": "damage-image-triage",
+   "kind": "endpoint",
+   "spend_usd_month": 3083.52
+  },
+  {
+   "team": "branch-ops",
+   "workload": "station-handbook-assistant",
+   "kind": "tokens",
+   "spend_usd_month": 1414.8
+  },
+  {
+   "team": "cs-automation",
+   "workload": "complaint-resolution",
+   "kind": "tokens",
+   "spend_usd_month": 1247.04
+  },
+  {
+   "team": "pricing",
+   "workload": "bid-price-bandit",
+   "kind": "endpoint",
+   "spend_usd_month": 671.6
+  },
+  {
+   "team": "pricing",
+   "workload": "pricing-conversion",
+   "kind": "endpoint",
+   "spend_usd_month": 335.8
+  },
+  {
+   "team": "fleet-ops",
+   "workload": "capacity-plan",
+   "kind": "endpoint",
+   "spend_usd_month": 335.8
+  },
+  {
+   "team": "customer-analytics",
+   "workload": "churn-score",
+   "kind": "endpoint",
+   "spend_usd_month": 251.85
+  },
+  {
+   "team": "revenue-mgmt",
+   "workload": "demand-forecast",
+   "kind": "endpoint",
+   "spend_usd_month": 167.9
+  },
+  {
+   "team": "finance-ds",
+   "workload": "credit-risk",
+   "kind": "endpoint",
+   "spend_usd_month": 167.9
+  },
+  {
+   "team": "damage",
+   "workload": "damage-cost",
+   "kind": "endpoint",
+   "spend_usd_month": 83.95
+  }
+ ],
+ "recommendations": [
+  {
+   "team": "cs-automation",
+   "workload": "cs-email-agent",
+   "action": "turn on prompt caching",
+   "reason": "2800 identical prefix tokens on every call",
+   "saving_usd_month": 11869.2
+  },
+  {
+   "team": "cs-automation",
+   "workload": "cs-email-agent",
+   "action": "switch to anthropic.claude-haiku-4-5",
+   "reason": "it passed this workload's release gates",
+   "saving_usd_month": 6235.199999999999
+  },
+  {
+   "team": "damage",
+   "workload": "damage-image-triage",
+   "action": "scale 3 \u2192 2 instances",
+   "reason": "mean utilisation 18%",
+   "saving_usd_month": 1027.8400000000001
+  },
+  {
+   "team": "branch-ops",
+   "workload": "station-handbook-assistant",
+   "action": "turn on prompt caching",
+   "reason": "2800 identical prefix tokens on every call",
+   "saving_usd_month": 791.28
+  },
+  {
+   "team": "cs-automation",
+   "workload": "complaint-resolution",
+   "action": "move to Bedrock batch inference",
+   "reason": "replies are not needed within seconds",
+   "saving_usd_month": 623.52
+  },
+  {
+   "team": "pricing",
+   "workload": "bid-price-bandit",
+   "action": "scale 4 \u2192 1 instances",
+   "reason": "mean utilisation 12%",
+   "saving_usd_month": 503.70000000000005
+  },
+  {
+   "team": "customer-analytics",
+   "workload": "churn-score",
+   "action": "scale 3 \u2192 1 instances",
+   "reason": "mean utilisation 8%",
+   "saving_usd_month": 167.90000000000003
+  },
+  {
+   "team": "finance-ds",
+   "workload": "credit-risk",
+   "action": "scale 2 \u2192 1 instances",
+   "reason": "mean utilisation 22%",
+   "saving_usd_month": 83.95
+  }
+ ],
+ "identified_saving_usd_month": 21302.59
+}

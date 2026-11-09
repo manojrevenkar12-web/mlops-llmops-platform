@@ -1,0 +1,69 @@
+# The control plane API on EKS. It runs with an IRSA role limited to the release path (infra/terraform/iam.tf).
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: paved
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: paved-control-plane
+  namespace: paved
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::ACCOUNT_ID:role/paved-control-plane
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paved-api
+  namespace: paved
+  labels: {app: paved-api}
+spec:
+  replicas: 2
+  selector:
+    matchLabels: {app: paved-api}
+  template:
+    metadata:
+      labels: {app: paved-api}
+    spec:
+      serviceAccountName: paved-control-plane
+      securityContext: {runAsNonRoot: true, runAsUser: 10001, fsGroup: 10001}
+      containers:
+        - name: api
+          image: ghcr.io/manojrevenkar12-web/mlops-llmops-platform:latest
+          ports: [{containerPort: 8000}]
+          env:
+            - {name: PAVED_EVENTS, value: /data/events.sqlite}
+          readinessProbe:
+            httpGet: {path: /healthz, port: 8000}
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: {path: /healthz, port: 8000}
+            periodSeconds: 30
+          resources:
+            requests: {cpu: 250m, memory: 512Mi}
+            limits: {cpu: "1", memory: 1Gi}
+          securityContext: {allowPrivilegeEscalation: false, readOnlyRootFilesystem: true}
+          volumeMounts: [{name: data, mountPath: /data}]
+      volumes:
+        - name: data
+          persistentVolumeClaim: {claimName: paved-events}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: paved-events
+  namespace: paved
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests: {storage: 5Gi}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: paved-api
+  namespace: paved
+spec:
+  selector: {app: paved-api}
+  ports: [{port: 80, targetPort: 8000}]

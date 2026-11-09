@@ -1,0 +1,80 @@
+# Every setting the platform uses. Tests read this file; nothing below is repeated in code.
+
+[platform]
+event_store = "runs/events.sqlite"
+registry_dir = "runs/registry"
+# A training run must end before the platform's holdout window starts (days before release day 0).
+holdout_days = 14
+
+[gates.model]
+# Offline, against the champion, on the platform's holdout window.
+non_inferiority_rel = 0.01        # candidate log loss may be at most 1% worse (upper 95% bound)
+bootstrap_resamples = 400
+slice_min_rows = 1500
+slice_non_inferiority_rel = 0.04
+max_calibration_increase = 0.02  # expected calibration error, candidate minus champion
+calibration_bins = 15
+# Shadow: candidate scores mirrored production requests, never answers them.
+shadow_requests = 20000
+max_feature_mismatch = 0.005   # share of shadowed requests whose served feature differs from the training pipeline
+p95_latency_slo_ms = 25.0
+max_error_rate = 0.002
+
+[gates.agent]
+non_inferiority_pp = 0.02         # resolution-relevant accuracy may drop at most 2 points (lower 95% bound)
+slice_columns = ["language", "phase"]
+slice_min_items = 40
+slice_non_inferiority_pp = 0.06
+max_fact_error_rate = 0.03        # replies that state a fact the current KB contradicts
+policy_violations_allowed = 0     # on the policy suite: refunds above the limit, breakdowns
+max_cost_increase_rel = 0.30      # cost per conversation vs champion, unless the release declares a budget change
+p95_latency_slo_ms = 8000.0
+shadow_requests = 1500
+max_tool_error_rate = 0.01
+
+[canary]
+# Traffic steps and the requests observed at each step (per arm, before moving on).
+model_steps = [0.05, 0.25, 0.50]
+model_requests_per_step = [60000, 120000, 160000]
+agent_steps = [0.05, 0.25, 0.50]
+agent_requests_per_step = [4000, 8000, 16000]
+alpha = 0.05
+# Model: revenue per offer, relative margin; agent: resolution rate, absolute margin.
+model_margin_rel = 0.02
+agent_margin_pp = 0.015
+# Mixture scale of the always-valid confidence sequence, as a multiple of the margin.
+mixture_scale = 1.0
+# How long a step runs: a model's bookings arrive within a day; an agent's resolution is "no recontact within
+# three days", so an agent step waits that long. Shadow and offline durations count toward lead time.
+model_step_hours = 24
+agent_step_hours = 72
+offline_hours = 1
+shadow_hours = 6
+# Guardrails stop a canary at any step.
+model_conversion_drop_rel = 0.05
+agent_audit_rate = 0.05
+agent_max_violation_rate = 0.002
+agent_max_escalation_increase_pp = 0.05
+
+[baselines]
+# What teams did before the platform, used only for comparison in the evaluation.
+fixed_canary_share = 0.10
+fixed_canary_requests = 60000
+fixed_canary_agent_requests = 4000
+
+[cost]
+currency = "USD"
+hours_per_month = 730
+budget_warn_share = 0.8
+low_utilisation = 0.25
+cache_hit_rate_assumed = 0.9
+
+[evaluation]
+# What makes a release bad, judged on the world's truth: the canary margins and SLOs above, plus no customer
+# segment harmed badly (a pricing segment losing more than 6% revenue; an intent or language losing 10 points).
+truth_segment_drop_rel = 0.06
+truth_segment_drop_pp = 0.10
+dev_seeds = [101, 102, 103]
+heldout_seeds = [9001, 9002, 9003]
+# Scenario kinds that only the held-out set contains (the gates were never shown them).
+heldout_only_kinds = ["unit_bug", "schema_rename", "tool_schema_drift", "language_regression"]
